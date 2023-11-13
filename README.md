@@ -4,6 +4,10 @@
 
 Este é um aplicativo de recomendações musicais que utiliza Machine Learning para fornecer recomendações personalizadas com base nas escolhas do usuário. O aplicativo permite que os usuários criem playlists com as recomendações e obtenham mais informações sobre as músicas recomendadas. Este projeto foi desenvolvido para a disciplina de Desenvolvimento de Sistemas da Informação na UFRPE e foi implementado usando Flutter.
 
+## Apresentação
+
+Um App Desenvolvido para recomendar e auxiliar na otimização de tempo ao escolher músicas. Confira esse pequeno vdeo de Apresentação [aqui](https://fromsmash.com/RebI3DH64B-et).
+
 ## Recursos
 
 - **Recomendações Personalizadas**: Utilizando algoritmos de Machine Learning, o aplicativo aprende com as escolhas musicais do usuário para fornecer recomendações personalizadas.
