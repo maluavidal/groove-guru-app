@@ -6,7 +6,7 @@ Este é um aplicativo de recomendações musicais que utiliza Machine Learning p
 
 ## Apresentação
 
-Um App Desenvolvido para recomendar e auxiliar na otimização de tempo ao escolher músicas. Confira esse pequeno vdeo de Apresentação [aqui](https://fromsmash.com/RebI3DH64B-et).
+Um App Desenvolvido para recomendar e auxiliar na otimização de tempo ao escolher músicas. Confira esse pequeno vdeo de Apresentação [aqui](https://vimeo.com/883846342?share=copy).
 
 ## Recursos
 
