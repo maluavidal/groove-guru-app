@@ -1,16 +1,22 @@
-# groove_guru_app
+# Recomendações Musicais com Machine Learning
 
-A new Flutter project.
+## Descrição
 
-## Getting Started
+Este é um aplicativo de recomendações musicais que utiliza Machine Learning para fornecer recomendações personalizadas com base nas escolhas do usuário. O aplicativo permite que os usuários criem playlists com as recomendações e obtenham mais informações sobre as músicas recomendadas. Este projeto foi desenvolvido para a disciplina de Desenvolvimento de Sistemas da Informação na UFRPE e foi implementado usando Flutter.
 
-This project is a starting point for a Flutter application.
+## Recursos
 
-A few resources to get you started if this is your first Flutter project:
+- **Recomendações Personalizadas**: Utilizando algoritmos de Machine Learning, o aplicativo aprende com as escolhas musicais do usuário para fornecer recomendações personalizadas.
+- **Criação de Playlists**: Os usuários podem criar playlists com as músicas recomendadas.
+- **Informações Detalhadas das Músicas**: Os usuários podem obter mais informações sobre as músicas recomendadas.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Instalação
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Para instalar e executar o aplicativo, siga estas etapas:
+
+1. Instale o Flutter em seu sistema. Você pode seguir o guia oficial de instalação do Flutter [aqui](https://flutter.dev/docs/get-started/install).
+2. Instale e configure o VS Code ou Android Studio como seu ambiente de desenvolvimento. Você pode seguir o guia oficial de configuração do ambiente de desenvolvimento do Flutter [aqui](https://flutter.dev/docs/get-started/editor?tab=vscode).
+3. Clone o repositório.
+4. Navegue até a pasta do projeto.
+5. Execute `flutter pub get` para instalar as dependências.
+6. Execute `flutter run` para iniciar o aplicativo.
