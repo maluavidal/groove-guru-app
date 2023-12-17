@@ -1,23 +1,21 @@
-//Tela Carol
-
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: MyApp()));
+void main() => runApp(Register());
 
 // ignore: use_key_in_widget_constructors
-class MyApp extends StatelessWidget {
+class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Color buttonColor = Color(0xFF0B759D); // Cor usada nos outros locais
+    Color buttonColor = const Color(0xFF0B759D);
 
     return MaterialApp(
       title: 'Cadastro',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Groove Guru'),
+          title: const Text('Groove Guru'),
         ),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("_606ef8e1-e655-4c35-8965-7ff8cbd6e772 1.png"), 
               fit: BoxFit.cover,
@@ -29,13 +27,13 @@ class MyApp extends StatelessWidget {
               children: <Widget>[
                 // Conteiner-Pai 1
                 Container(
-                  margin: EdgeInsets.symmetric(vertical: 14),
+                  margin: const EdgeInsets.symmetric(vertical: 14),
                   width: 300,
                   decoration: BoxDecoration(
-                    color: Colors.white, // Cor de fundo do contêiner
+                    color: Colors.white,
                     border: Border.all(
                       width: 4,
-                      color: buttonColor, // Define a cor da borda aqui
+                      color: buttonColor,
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -43,42 +41,42 @@ class MyApp extends StatelessWidget {
                     children: [
                       Container(
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: Text(
                           'Realize seu cadastro',
                           style: TextStyle(
                             fontSize: 22,
                             fontFamily: 'Poppins',
-                            color: buttonColor, // Usar mesma cor para o texto
+                            color: buttonColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                       Container(
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: Text(
                           'Nome',
                           style: TextStyle(
                             fontSize: 18,
                             fontFamily: 'Poppins',
-                            color: buttonColor, // Usar a mesma cor para o texto
+                            color: buttonColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                       Container(
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: TextField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             labelText: 'Seu usuário',
                           ),
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Poppins',
-                            color: buttonColor, // Usar a mesma cor para o texto
+                            color: buttonColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -88,13 +86,13 @@ class MyApp extends StatelessWidget {
                 ),
                 // Conteiner-Pai 2
                 Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
+                  margin: const EdgeInsets.symmetric(vertical: 10),
                   width: 300,
                   decoration: BoxDecoration(
-                    color: Colors.white, // Cor de fundo do contêiner
+                    color: Colors.white,
                     border: Border.all(
                       width: 4,
-                      color: buttonColor, // Define a cor da borda aqui
+                      color: buttonColor,
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -102,34 +100,34 @@ class MyApp extends StatelessWidget {
                     children: [
                       Container(
                         alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: Text(
                           'Senha',
                           style: TextStyle(
                             fontSize: 18,
                             fontFamily: 'Poppins',
-                            color: buttonColor, // Usar mesma cor para o texto
+                            color: buttonColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         child: TextField(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             labelText: 'Sua senha',
                           ),
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Poppins',
-                            color: buttonColor, // Usar a mesma cor para o texto
+                            color: buttonColor, 
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(bottom: 10),
                         // box
                         // ignore: sized_box_for_whitespace
                         child: Container(
@@ -137,9 +135,9 @@ class MyApp extends StatelessWidget {
                           child: ElevatedButton(
                             onPressed: () {},
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(buttonColor), // Define a cor do botão
+                              backgroundColor: MaterialStateProperty.all(buttonColor),
                             ),
-                            child: Text('salvar'),
+                            child: const Text('salvar'),
                           ),
                         ),
                       ),
