@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'music_info.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -16,6 +17,8 @@ class Playlist extends StatefulWidget {
 }
 
 class _PlaylistState extends State<Playlist> {
+  List<String> songs = List.generate(20, (index) => 'Song ${index + 1}');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,42 +78,110 @@ class _PlaylistState extends State<Playlist> {
   }
 
   Widget _buildSongList() {
-    return ListView.builder(
-      itemCount: 20, // Replace with the actual number of songs
-      itemBuilder: (context, index) {
-        final songName = 'Song ${index + 1}';
-        return Dismissible(
-          key: Key(songName),
-          direction: DismissDirection.endToStart,
-          onDismissed: (direction) {
-            // Handle song removal
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('$songName removed from playlist'),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          },
-          background: Container(
-            color: Colors.red,
-            alignment: AlignmentDirectional.centerEnd,
-            padding: const EdgeInsets.only(right: 16.0),
-            child: const Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-          ),
-          child: ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(songName),
-                const Icon(Icons.remove_circle, color: Colors.red),
-              ],
-            ),
-          ),
-        );
+    return ListView(
+      children: songs.map((songName) {
+        return _buildSongContainer(songName);
+      }).toList(),
+    );
+  }
+
+  Widget _buildSongContainer(String songName) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: _buildDismissibleSong(songName),
+    );
+  }
+
+  Widget _buildDismissibleSong(String songName) {
+    return Dismissible(
+      key: Key(songName),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        _removeSong(songName);
+        _showSongRemovedSnackBar(songName);
       },
+      background: _buildDismissBackground(),
+      child: _buildSongTile(songName),
+    );
+  }
+
+  Widget _buildDismissBackground() {
+    return Container(
+      color: Colors.red,
+      alignment: AlignmentDirectional.centerEnd,
+      padding: const EdgeInsets.only(right: 16.0),
+      child: const Icon(
+        Icons.delete,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildSongTile(String songName) {
+    return ListTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(songName),
+          _buildPopupMenu(songName),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPopupMenu(String songName) {
+    return PopupMenuButton<String>(
+      onSelected: (value) {
+        _handlePopupMenuSelection(value, songName);
+      },
+      itemBuilder: (context) => [
+        const PopupMenuItem<String>(
+          value: 'info',
+          child: Text('Sobre a música'),
+        ),
+        const PopupMenuItem<String>(
+          value: 'delete',
+          child: Text('Remover'),
+        ),
+      ],
+    );
+  }
+
+  void _removeSong(String songName) {
+    setState(() {
+      songs.remove(songName);
+    });
+  }
+
+  void _showSongRemovedSnackBar(String songName) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$songName foi removida de sua playlist'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _handlePopupMenuSelection(String value, String songName) {
+    if (value == 'info') {
+      _navigateToMusicInfoScreen(songName);
+    } else if (value == 'delete') {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      _removeSong(songName);
+      _showSongRemovedSnackBar(songName);
+    }
+  }
+
+  void _navigateToMusicInfoScreen(String songName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MusicInfo(songName: songName),
+      ),
     );
   }
 
