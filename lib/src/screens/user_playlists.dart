@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'playlist.dart';
 
 class UserPlaylists extends StatefulWidget {
   const UserPlaylists({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: const Color.fromARGB(255, 33, 205, 243),
-      automaticallyImplyLeading: false, // Disable the default back button
+      automaticallyImplyLeading: false,
       title: Row(
         children: [
           IconButton(
@@ -53,10 +54,10 @@ class _UserPlaylistsState extends State<UserPlaylists> {
               color: Colors.white,
             ),
             onPressed: () {
-              // Handle back arrow press
+              Navigator.pop(context);
             },
           ),
-          const SizedBox(width: 8), // Adjust the width as needed
+          const SizedBox(width: 8),
           const Text(
             'Minhas Playlists',
             style: TextStyle(
@@ -113,27 +114,37 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   }
 
   Widget _buildPlaylistContainer(String playlistName) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: 70,
-      margin: const EdgeInsets.only(bottom: 16.0, left: 13.0, right: 13.0),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromARGB(108, 12, 102, 175),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Playlist(playlistName: playlistName),
           ),
-        ],
-      ),
-      padding: const EdgeInsets.all(15.0),
-      child: Center(
-        child: Text(
-          playlistName,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontFamily: 'Poppins',
+        );
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: 70,
+        margin: const EdgeInsets.only(bottom: 16.0, left: 13.0, right: 13.0),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromARGB(108, 12, 102, 175),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(15.0),
+        child: Center(
+          child: Text(
+            playlistName,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontFamily: 'Poppins',
+            ),
           ),
         ),
       ),
