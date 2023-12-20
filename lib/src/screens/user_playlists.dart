@@ -74,7 +74,7 @@ class _UserPlaylistsState extends State<UserPlaylists> {
               color: Colors.white,
             ),
             onPressed: () {
-              // Handle creating a new playlist
+              _showCreatePlaylistDialog();
             },
           ),
         ],
@@ -189,6 +189,66 @@ class _UserPlaylistsState extends State<UserPlaylists> {
         ],
       ),
     );
+  }
+
+  Future<void> _showCreatePlaylistDialog() async {
+  String playlistName = '';
+
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        title: const Text('Nomeie a sua playlist'),
+        content: TextField(
+          onChanged: (value) {
+            playlistName = value;
+          },
+          style: const TextStyle(color: Colors.black),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _createPlaylist(playlistName);
+              Navigator.of(context).pop();
+            },
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            child: const Text('Criar',
+              style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  void _createPlaylist(String playlistName) {
+    setState(() {
+      playlists.add(playlistName);
+    });
   }
 }
 
