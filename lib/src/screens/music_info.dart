@@ -13,7 +13,7 @@ class MusicInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(context) {
+  Widget _buildBody(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -22,14 +22,23 @@ class MusicInfo extends StatelessWidget {
             decoration: _buildContainerDecoration(),
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 3.0),
                 _buildBackArrow(context),
                 const SizedBox(height: 16.0),
                 _buildSongImage(),
                 const SizedBox(height: 16.0),
-                _buildSongDetails(),
+                Text(
+                  songName,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                _buildDetailsContainer(),
               ],
             ),
           ),
@@ -64,20 +73,45 @@ class MusicInfo extends StatelessWidget {
   }
 
   Widget _buildSongImage() {
-    // Replace this with the actual widget you want to use for the song image
     return Container(
-      height: 200.0,
-      color: Colors.grey, // Placeholder color
+      height: 300.0,
+      width: 300.0,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue, width: 2.0),
+        borderRadius: BorderRadius.circular(10.0),
+        color: Colors.grey,
+      ),
+      // replace the color property with the actual image in the future
+      // child: Image.asset('your_image_path_here'),
     );
   }
 
-  Widget _buildSongDetails() {
-    return Text(
-      'Song Details: $songName',
-      style: const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
+  Widget _buildDetailsContainer() {
+  return Expanded(
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue, width: 4.0),
+        borderRadius: BorderRadius.circular(16.0),
         color: Colors.white,
+      ),
+      margin: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          _buildSongDetails(),
+        ],
+      ),
+    ),
+  );
+}
+
+  Widget _buildSongDetails() {
+    return const Text(
+      'song details',
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
       ),
     );
   }
