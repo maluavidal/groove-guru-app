@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
 import 'playlist.dart';
 
+void main() {
+  runApp(const MaterialApp(
+    home: UserPlaylists(),
+  ));
+}
+
 class UserPlaylists extends StatefulWidget {
   const UserPlaylists({Key? key}) : super(key: key);
+
+  static List<String> playlists = [
+    "My Playlist 1",
+    "My Playlist 2",
+    "My Playlist 3",
+    "My Playlist 4",
+    "My Playlist 5",
+    "My Playlist 6",
+    "My Playlist 7",
+    "My Playlist 8",
+  ];
 
   @override
   State<UserPlaylists> createState() => _UserPlaylistsState();
@@ -192,68 +209,127 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   }
 
   Future<void> _showCreatePlaylistDialog() async {
-  String playlistName = '';
+    String playlistName = '';
 
-  return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        title: const Text('Nomeie a sua playlist'),
-        content: TextField(
-          onChanged: (value) {
-            playlistName = value;
-          },
-          style: const TextStyle(color: Colors.black),
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            filled: true,
-            fillColor: Colors.white,
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
+          title: const Text('Nomeie a sua playlist'),
+          content: TextField(
+            onChanged: (value) {
+              playlistName = value;
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-            ),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _createPlaylist(playlistName);
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.blue,
-              shape: RoundedRectangleBorder(
+            style: const TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
+              filled: true,
+              fillColor: Colors.white,
             ),
-            child: const Text('Criar',
-              style: TextStyle(color: Colors.white)),
           ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _createPlaylist(playlistName);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text('Criar', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showAddToPlaylistDialog(String songName) async {
+    String selectedPlaylist = '';
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: const Text('Adicionar a playlist'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButton<String>(
+                value: selectedPlaylist,
+                hint: const Text('Selecione a playlist'),
+                items: playlists.map((String playlist) {
+                  return DropdownMenuItem<String>(
+                    value: playlist,
+                    child: Text(playlist),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    selectedPlaylist = value ?? '';
+                  });
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _addToPlaylist(selectedPlaylist, songName);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text('Adicionar', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _createPlaylist(String playlistName) {
     setState(() {
       playlists.add(playlistName);
     });
   }
-}
 
-void main() {
-  runApp(const MaterialApp(
-    home: UserPlaylists(),
-  ));
+  void _addToPlaylist(String playlistName, String songName) {
+    // Implemente a lógica para adicionar a música à playlist selecionada
+    // (pode envolver a navegação para a página da playlist ou a manipulação do estado, dependendo da sua implementação)
+    print('Adicionar $songName à playlist $playlistName');
+  }
 }
