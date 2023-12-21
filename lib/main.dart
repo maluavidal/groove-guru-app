@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:groove_guru_app/firebase_options.dart';
 import 'package:groove_guru_app/src/screens/repository/authenticantion_repository.dart';
 import 'src/routes.dart';
-import 'package:get/get.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

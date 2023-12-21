@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:get/get.dart';
+
 import 'package:flutter/material.dart';
 import 'package:groove_guru_app/src/screens/controllers/register_controller.dart';
 

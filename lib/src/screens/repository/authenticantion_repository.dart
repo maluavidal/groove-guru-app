@@ -1,5 +1,5 @@
 import 'dart:ffi';
-import 'package:get/get.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:groove_guru_app/src/screens/home.dart';
@@ -20,7 +20,9 @@ class AuthenticationRepository extends GetxController {
   }
 
   _setInitialScreen(User? user) {
-    user == null ? Get.offAll(() => Register()) : Get.offAll(() => Home());
+    user == null
+        ? Get.offAll(() => const Register())
+        : Get.offAll(() => const Home());
   }
 
   Future<void> createUserWithEmailAndPassword(
@@ -29,14 +31,14 @@ class AuthenticationRepository extends GetxController {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       firebaseUser.value != null
-          ? Get.offAll(() => Home())
-          : Get.to(() => Register());
+          ? Get.offAll(() => const Home())
+          : Get.to(() => Register);
     } on FirebaseAuthException catch (e) {
       final ex = RegisterFailure.code(e.code);
       print('FIREBASE AUTH EXCEPTION - ${ex.message}');
       throw ex;
     } catch (_) {
-      final ex = RegisterFailure();
+      const ex = RegisterFailure();
       print('EXCPETION - ${ex.message}');
       throw ex;
     }
