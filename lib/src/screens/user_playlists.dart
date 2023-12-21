@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'playlist.dart';
+import 'package:groove_guru_app/src/screens/home.dart';
 
 class UserPlaylists extends StatefulWidget {
   const UserPlaylists({Key? key}) : super(key: key);
@@ -152,44 +153,54 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   }
 
   Widget _buildBottomNavigationBar() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.11,
-      padding: const EdgeInsets.all(8.2),
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 33, 205, 243),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          _buildBottomNavItem('images/music_info.png', 'Info'),
-          _buildBottomNavItem('images/Sikh.png', 'Home'),
-          _buildBottomNavItem('images/playlists.png', 'Playlists'),
-        ],
-      ),
-    );
-  }
+  return Container(
+    width: MediaQuery.of(context).size.width * 0.9,
+    height: MediaQuery.of(context).size.height * 0.11,
+    padding: const EdgeInsets.all(8.2),
+    decoration: const BoxDecoration(
+      color: Color.fromARGB(255, 33, 205, 243),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        _buildBottomNavItem('images/music_info.png', 'Info', () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => Home(),
+          ));
+        }),
+        _buildBottomNavItem('images/Sikh.png', 'Home', () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => Home(),
+          ));
+        }),
+        _buildBottomNavItem('images/playlists.png', 'Playlists', () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => UserPlaylists(),
+          ));
+        }),
+      ],
+    ),
+  );
+}
 
-  Widget _buildBottomNavItem(String iconPath, String label) {
-    return TextButton(
-      onPressed: () {
-        // handle button action
-      },
-      child: Column(
-        children: <Widget>[
-          Image.asset(iconPath),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12.0,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
+  return TextButton(
+    onPressed: onTap,
+    child: Column(
+      children: <Widget>[
+        Image.asset(iconPath),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12.0,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+ }
 
   Future<void> _showCreatePlaylistDialog() async {
   String playlistName = '';

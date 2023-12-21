@@ -11,13 +11,11 @@ class Register extends StatelessWidget {
     return MaterialApp(
       title: 'Cadastro',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Groove Guru'),
-        ),
+        appBar: null,
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("_606ef8e1-e655-4c35-8965-7ff8cbd6e772 1.png"), 
+              image: AssetImage("images/tela-inicial.png"), 
               fit: BoxFit.cover,
             ),
           ),
@@ -137,7 +135,7 @@ class Register extends StatelessWidget {
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(buttonColor),
                             ),
-                            child: const Text('salvar'),
+                            child: const Text('salvar', style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ),
