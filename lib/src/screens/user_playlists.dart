@@ -328,8 +328,6 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   }
 
   void _addToPlaylist(String playlistName, String songName) {
-    // Implemente a lógica para adicionar a música à playlist selecionada
-    // (pode envolver a navegação para a página da playlist ou a manipulação do estado, dependendo da sua implementação)
     print('Adicionar $songName à playlist $playlistName');
   }
 }

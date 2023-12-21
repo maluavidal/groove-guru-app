@@ -36,13 +36,13 @@ class _ArtistPageState extends State<ArtistPage> {
           ),
           Center(
             child: Container(
-              width: 350.0, // Ajuste a largura conforme necessário
-              margin: EdgeInsets.only(top: 50.0, bottom: 20.0), // Ajuste os espaçamentos superior e inferior conforme necessário
-              decoration: BoxDecoration(
-                color: Colors.transparent, // Alterado para transparente para não cobrir a imagem de fundo
+              width: 350.0,
+              margin: const EdgeInsets.only(top: 50.0, bottom: 20.0),
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(5.0), // Espaçamento em relação aos cantos do contêiner maior
+                padding: const EdgeInsets.all(5.0),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -52,7 +52,7 @@ class _ArtistPageState extends State<ArtistPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20.0),
                             topRight: Radius.circular(20.0),
@@ -73,7 +73,7 @@ class _ArtistPageState extends State<ArtistPage> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       Text(
                         widget.artist.name,
                         style: const TextStyle(
@@ -82,20 +82,20 @@ class _ArtistPageState extends State<ArtistPage> {
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       Container(
-                        width: 250.0, // Ajuste a largura da imagem conforme necessário
-                        height: 150.0, // Ajuste a altura da imagem conforme necessário
+                        width: 250.0,
+                        height: 150.0,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0), // Ajuste o raio conforme necessário
-                          image: DecorationImage(
+                          borderRadius: BorderRadius.circular(20.0),
+                          image: const DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage('images/matt.jpg'), // Substitua pelo caminho da sua imagem
+                            image: AssetImage('images/matt.jpg'),
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.0),
-                      SizedBox(height: 8.0), // Adiciona espaço entre a imagem e o contêiner de músicas
+                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 8.0),
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(16.0),
@@ -250,7 +250,7 @@ class _ArtistPageState extends State<ArtistPage> {
   Widget _buildBottomNavItem(String iconPath, String label) {
     return TextButton(
       onPressed: () {
-        // handle button action
+      
       },
       child: Column(
         children: <Widget>[
