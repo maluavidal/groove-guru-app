@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:groove_guru_app/src/screens/controllers/register_controller.dart';
 
 void main() => runApp(Register());
 
@@ -7,6 +10,8 @@ class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color buttonColor = const Color(0xFF0B759D);
+    final controller = Get.put(RegisterController());
+    final _formKey = GlobalKey<FormState>();
 
     return MaterialApp(
       title: 'Cadastro',
@@ -20,6 +25,7 @@ class Register extends StatelessWidget {
             ),
           ),
           child: Center(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -67,9 +73,10 @@ class Register extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.all(10),
                         child: TextField(
+                          controller: controller.email,
                           decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
-                            labelText: 'Seu usuário',
+                            labelText: 'Seu email',
                           ),
                           style: TextStyle(
                             fontSize: 14,
@@ -112,6 +119,7 @@ class Register extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         child: TextField(
+                          controller: controller.passowrd,
                           decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             labelText: 'Sua senha',
@@ -119,7 +127,7 @@ class Register extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Poppins',
-                            color: buttonColor, 
+                            color: buttonColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -131,9 +139,16 @@ class Register extends StatelessWidget {
                         child: Container(
                           width: 200,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                RegisterController.instance.registerUser(
+                                    controller.email.text.trim(),
+                                    controller.passowrd.text.trim());
+                              }
+                            },
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(buttonColor),
+                              backgroundColor:
+                                  MaterialStateProperty.all(buttonColor),
                             ),
                             child: const Text('salvar', style: TextStyle(color: Colors.white)),
                           ),
