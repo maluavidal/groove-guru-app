@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:groove_guru_app/src/screens/repository/authenticantion_repository.dart';
+import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
   static RegisterController get instance => Get.find();
@@ -9,6 +10,6 @@ class RegisterController extends GetxController {
 
   void registerUser(String email, String passowrd) {
     AuthenticationRepository.instance
-        .createUserWithEmailAndPassword(email, password);
+        .createUserWithEmailAndPassword(email, passowrd);
   }
 }
