@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:groove_guru_app/src/screens/NavegationBarBottom.dart';
 import 'playlist.dart';
 import 'package:groove_guru_app/src/screens/home.dart';
 
@@ -56,7 +57,7 @@ class _UserPlaylistsState extends State<UserPlaylists> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: NavegationBarBottom(),
     );
   }
 
@@ -120,16 +121,34 @@ class _UserPlaylistsState extends State<UserPlaylists> {
     );
   }
 
-  Widget _buildPlaylistContainers() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: playlists.length,
-        itemBuilder: (context, index) {
-          return _buildPlaylistContainer(playlists[index]);
-        },
-      ),
-    );
-  }
+Widget _buildPlaylistContainers() {
+  return Expanded(
+    child: ListView.builder(
+      itemCount: playlists.length,
+      itemBuilder: (context, index) {
+        return Dismissible(
+          key: Key(playlists[index]),
+          onDismissed: (direction) {
+            setState(() {
+              playlists.removeAt(index);
+            });
+          },
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 16.0),
+            child: const Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+          ),
+          child: _buildPlaylistContainer(playlists[index]),
+        );
+      },
+    ),
+  );
+}
+
 
   Widget _buildPlaylistContainer(String playlistName) {
     return GestureDetector(

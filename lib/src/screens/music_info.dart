@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:groove_guru_app/src/screens/home.dart';
 import 'package:groove_guru_app/src/screens/user_playlists.dart';
+import 'package:groove_guru_app/src/screens/NavegationBarBottom.dart';
+
 class MusicInfo extends StatelessWidget {
   final String songName;
 
@@ -10,7 +12,7 @@ class MusicInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _buildBody(context),
-      bottomNavigationBar: _buildBottomNavigationBar(context),
+      bottomNavigationBar: NavegationBarBottom(),
     );
   }
 

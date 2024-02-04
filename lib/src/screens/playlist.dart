@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'music_info.dart';
 import 'package:groove_guru_app/src/screens/home.dart';
 import 'package:groove_guru_app/src/screens/user_playlists.dart';
+import 'package:groove_guru_app/src/screens/NavegationBarBottom.dart';
+
 void main() {
   runApp(const MaterialApp(
     home: Playlist(playlistName: 'Your Playlist Name'),
@@ -24,7 +26,7 @@ class _PlaylistState extends State<Playlist> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _buildBody(),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: NavegationBarBottom(),
     );
   }
 
@@ -123,34 +125,22 @@ class _PlaylistState extends State<Playlist> {
   }
 
   Widget _buildSongTile(String songName) {
-    return ListTile(
+  return GestureDetector(
+    onLongPress: () {
+      _navigateToMusicInfoScreen(songName);
+    },
+    child: ListTile(
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(songName),
-          _buildPopupMenu(songName),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildPopupMenu(String songName) {
-    return PopupMenuButton<String>(
-      onSelected: (value) {
-        _handlePopupMenuSelection(value, songName);
-      },
-      itemBuilder: (context) => [
-        const PopupMenuItem<String>(
-          value: 'info',
-          child: Text('Sobre a música'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'delete',
-          child: Text('Remover'),
-        ),
-      ],
-    );
-  }
+  
 
   void _removeSong(String songName) {
     setState(() {
@@ -167,15 +157,7 @@ class _PlaylistState extends State<Playlist> {
     );
   }
 
-  void _handlePopupMenuSelection(String value, String songName) {
-    if (value == 'info') {
-      _navigateToMusicInfoScreen(songName);
-    } else if (value == 'delete') {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      _removeSong(songName);
-      _showSongRemovedSnackBar(songName);
-    }
-  }
+  
 
   void _navigateToMusicInfoScreen(String songName) {
     Navigator.push(
@@ -186,53 +168,53 @@ class _PlaylistState extends State<Playlist> {
     );
   }
 
-  Widget _buildBottomNavigationBar() {
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.9,
-    height: MediaQuery.of(context).size.height * 0.11,
-    padding: const EdgeInsets.all(8.2),
-    decoration: const BoxDecoration(
-      color: Color.fromARGB(255, 33, 205, 243),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        _buildBottomNavItem('images/music_info.png', 'Info', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem('images/Sikh.png', 'Home', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem('images/playlists.png', 'Playlists', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => UserPlaylists(),
-          ));
-        }),
-      ],
-    ),
-  );
-}
+//   Widget _buildBottomNavigationBar() {
+//   return Container(
+//     width: MediaQuery.of(context).size.width * 0.9,
+//     height: MediaQuery.of(context).size.height * 0.11,
+//     padding: const EdgeInsets.all(8.2),
+//     decoration: const BoxDecoration(
+//       color: Color.fromARGB(255, 33, 205, 243),
+//     ),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//       children: <Widget>[
+//         _buildBottomNavItem('images/music_info.png', 'Info', () {
+//           Navigator.push(context, MaterialPageRoute(
+//             builder: (_) => Home(),
+//           ));
+//         }),
+//         _buildBottomNavItem('images/Sikh.png', 'Home', () {
+//           Navigator.push(context, MaterialPageRoute(
+//             builder: (_) => Home(),
+//           ));
+//         }),
+//         _buildBottomNavItem('images/playlists.png', 'Playlists', () {
+//           Navigator.push(context, MaterialPageRoute(
+//             builder: (_) => UserPlaylists(),
+//           ));
+//         }),
+//       ],
+//     ),
+//   );
+// }
 
-Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
-  return TextButton(
-    onPressed: onTap,
-    child: Column(
-      children: <Widget>[
-        Image.asset(iconPath),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12.0,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    ),
-  );
- }
+// Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
+//   return TextButton(
+//     onPressed: onTap,
+//     child: Column(
+//       children: <Widget>[
+//         Image.asset(iconPath),
+//         Text(
+//           label,
+//           style: const TextStyle(
+//             fontSize: 12.0,
+//             color: Colors.white,
+//             fontWeight: FontWeight.bold,
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+//  }
 }

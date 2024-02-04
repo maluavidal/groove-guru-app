@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:groove_guru_app/src/screens/NavegationBarBottom.dart';
 
 class Recomendation extends StatefulWidget {
   const Recomendation({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class _RecomendationState extends State<Recomendation>
         ],
         
         
-      ),bottomNavigationBar: _buildBottomNavigationBar(),
+      ),bottomNavigationBar: NavegationBarBottom(),
     );
   }
 
