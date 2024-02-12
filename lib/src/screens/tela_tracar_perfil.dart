@@ -16,7 +16,6 @@ class FavoritesScreen extends StatelessWidget {
         ),
         body: Stack(
           children: [
-            // Adicionando imagem de plano de fundo
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -44,7 +43,6 @@ class FavoritesBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          // Título
           Text(
             'Selecione seus Favoritos',
             style: TextStyle(
@@ -55,11 +53,9 @@ class FavoritesBody extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-
-          // Lista de Músicas Favoritas
           Expanded(
             child: ListView.builder(
-              itemCount: 5, // Número de músicas favoritas
+              itemCount: 5, 
               itemBuilder: (context, index) {
                 return FavoriteItem(
                   songName: 'Nome da Música $index',
@@ -70,7 +66,6 @@ class FavoritesBody extends StatelessWidget {
             ),
           ),
 
-          // Botoes Refresh e Pronto
           Container(
             margin: const EdgeInsets.only(top: 20),
             child: Row(
@@ -78,30 +73,28 @@ class FavoritesBody extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Lógica para o botão Refresh
                     print('Refresh Pressed');
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF0B759D), // Cor de fundo
-                    onPrimary: Colors.white, // Cor do texto
-                    side: BorderSide(color: Colors.white), // Borda branca
+                    primary: Color(0xFF0B759D), 
+                    onPrimary: Colors.white, 
+                    side: BorderSide(color: Colors.white), 
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0), // Borda retangular
+                      borderRadius: BorderRadius.circular(0), 
                     ),
                   ),
                   child: Text('Refresh'),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Lógica para o botão Pronto
                     print('Pronto Pressed');
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF0B759D), // Cor de fundo
-                    onPrimary: Colors.white, // Cor do texto
-                    side: BorderSide(color: Colors.white), // Borda branca
+                    primary: Color(0xFF0B759D), 
+                    onPrimary: Colors.white, 
+                    side: BorderSide(color: Colors.white), 
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0), // Borda retangular
+                      borderRadius: BorderRadius.circular(0), 
                     ),
                   ),
                   child: Text('Pronto'),
@@ -141,22 +134,16 @@ class FavoriteItem extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Quadrado para Imagens
+          children: [  
             Container(
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: Colors.grey, // Cor de fundo do quadrado
+                color: Colors.grey, 
                 borderRadius: BorderRadius.circular(8),
-              ),
-              // Adicione aqui o código para exibir as imagens dentro do quadrado
-            ),
-
-            // Espaçamento
+              ),  
+            ), 
             SizedBox(width: 10),
-
-            // Detalhes da Música
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,10 +171,8 @@ class FavoriteItem extends StatelessWidget {
               ),
             ),
 
-            // Ícone de Coração Clicável
             InkWell(
               onTap: () {
-                // Lógica quando o coração é clicado
                 print('Coração Clicado');
               },
               child: Icon(
@@ -209,17 +194,15 @@ class BottomMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      color: Color(0xFF1FBABF), // Cor de fundo da barra inferior
+      color: Color(0xFF1FBABF), 
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         height: 50,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Ícone 1
             IconButton(
               onPressed: () {
-                // Lógica para o Ícone 1
                 print('Ícone 1 Pressionado');
               },
               icon: Image.asset(
@@ -228,10 +211,8 @@ class BottomMenu extends StatelessWidget {
                 height: 100,
               ),
             ),
-            // Ícone 2
             IconButton(
               onPressed: () {
-                // Lógica para o Ícone 2
                 print('Ícone 2 Pressionado');
               },
               icon: Image.asset(
@@ -239,11 +220,9 @@ class BottomMenu extends StatelessWidget {
                 width: 100,
                 height: 100,
               ),
-            ),
-            // Ícone 3
+            ), 
             IconButton(
               onPressed: () {
-                // Lógica para o Ícone 3
                 print('Ícone 3 Pressionado');
               },
               icon: Image.asset(

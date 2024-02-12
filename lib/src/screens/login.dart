@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../routes.dart';
 
+
 void main() => runApp(const Login());
 
 class Login extends StatelessWidget {
@@ -11,9 +12,7 @@ class Login extends StatelessWidget {
     return MaterialApp(
       title: 'Login',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Groove Guru'),
-        ),
+        appBar: null,
         body: Stack(
           fit: StackFit.expand,
           children: <Widget>[
@@ -140,7 +139,8 @@ class Login extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF0B759D),
                               ),
-                              child: const Text('entrar'),
+                              child: const Text('entrar',
+                              style: TextStyle(color: Colors.white),),
                             ),
                           ),
                         ),
@@ -180,7 +180,8 @@ class Login extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF0B759D),
                             ),
-                            child: const Text('cadastrar'),
+                            child: const Text('cadastrar',
+                            style: TextStyle(color: Colors.white),),
                           ),
                         ),
                       ],

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "874029086467",
+    "project_id": "groove-guru",
+    "storage_bucket": "groove-guru.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874029086467:android:86369d91ca03714391db36",
+        "android_client_info": {
+          "package_name": "com.example.groove_guru_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb44wcgpzejj5m19LiKYdQYGVR2JJdQcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
 import 'playlist.dart';
+import 'package:groove_guru_app/src/screens/home.dart';
+
+void main() {
+  runApp(const MaterialApp(
+    home: UserPlaylists(),
+  ));
+}
 
 class UserPlaylists extends StatefulWidget {
   const UserPlaylists({Key? key}) : super(key: key);
+
+  static List<String> playlists = [
+    "My Playlist 1",
+    "My Playlist 2",
+    "My Playlist 3",
+    "My Playlist 4",
+    "My Playlist 5",
+    "My Playlist 6",
+    "My Playlist 7",
+    "My Playlist 8",
+  ];
 
   @override
   State<UserPlaylists> createState() => _UserPlaylistsState();
@@ -152,108 +170,175 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   }
 
   Widget _buildBottomNavigationBar() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.11,
-      padding: const EdgeInsets.all(8.2),
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 33, 205, 243),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          _buildBottomNavItem('images/music_info.png', 'Info'),
-          _buildBottomNavItem('images/Sikh.png', 'Home'),
-          _buildBottomNavItem('images/playlists.png', 'Playlists'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomNavItem(String iconPath, String label) {
-    return TextButton(
-      onPressed: () {
-        // handle button action
-      },
-      child: Column(
-        children: <Widget>[
-          Image.asset(iconPath),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12.0,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _showCreatePlaylistDialog() async {
-  String playlistName = '';
-
-  return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        title: const Text('Nomeie a sua playlist'),
-        content: TextField(
-          onChanged: (value) {
-            playlistName = value;
-          },
-          style: const TextStyle(color: Colors.black),
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-            ),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _createPlaylist(playlistName);
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
-            child: const Text('Criar',
-              style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      );
-    },
+  return Container(
+    width: MediaQuery.of(context).size.width * 0.9,
+    height: MediaQuery.of(context).size.height * 0.11,
+    padding: const EdgeInsets.all(8.2),
+    decoration: const BoxDecoration(
+      color: Color.fromARGB(255, 33, 205, 243),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        _buildBottomNavItem('images/music_info.png', 'Info', () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => Home(),
+          ));
+        }),
+        _buildBottomNavItem('images/Sikh.png', 'Home', () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => Home(),
+          ));
+        }),
+        _buildBottomNavItem('images/playlists.png', 'Playlists', () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => UserPlaylists(),
+          ));
+        }),
+      ],
+    ),
   );
 }
+
+Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
+  return TextButton(
+    onPressed: onTap,
+    child: Column(
+      children: <Widget>[
+        Image.asset(iconPath),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12.0,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    ),
+  );
+ }
+
+  Future<void> _showCreatePlaylistDialog() async {
+    String playlistName = '';
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: const Text('Nomeie a sua playlist'),
+          content: TextField(
+            onChanged: (value) {
+              playlistName = value;
+            },
+            style: const TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              filled: true,
+              fillColor: Colors.white,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _createPlaylist(playlistName);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text('Criar', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showAddToPlaylistDialog(String songName) async {
+    String selectedPlaylist = '';
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: const Text('Adicionar a playlist'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButton<String>(
+                value: selectedPlaylist,
+                hint: const Text('Selecione a playlist'),
+                items: playlists.map((String playlist) {
+                  return DropdownMenuItem<String>(
+                    value: playlist,
+                    child: Text(playlist),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    selectedPlaylist = value ?? '';
+                  });
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _addToPlaylist(selectedPlaylist, songName);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text('Adicionar', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _createPlaylist(String playlistName) {
     setState(() {
       playlists.add(playlistName);
     });
   }
-}
 
-void main() {
-  runApp(const MaterialApp(
-    home: UserPlaylists(),
-  ));
+  void _addToPlaylist(String playlistName, String songName) {
+    print('Adicionar $songName à playlist $playlistName');
+  }
 }
