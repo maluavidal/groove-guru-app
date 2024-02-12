@@ -292,7 +292,7 @@ class _HomeState extends State<Home> {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount:
-                    8, // Pode ser substituído pelo número real de playlists recomendadas
+                    8,
                 itemBuilder: (context, index) {
                   return Container(
                     width: 70,
