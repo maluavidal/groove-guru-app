@@ -104,7 +104,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late String _userName = ''; // Inicialize _userName com uma string vazia
+  late String _userName = '';
   late List<String> _userPlaylists = [];
 
   @override
