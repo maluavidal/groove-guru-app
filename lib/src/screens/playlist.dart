@@ -182,7 +182,6 @@ class _PlaylistState extends State<Playlist> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(songName),
-          // Adicione o ícone de menu de contexto aqui, se necessário
         ],
       ),
     );
