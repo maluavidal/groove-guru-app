@@ -300,7 +300,7 @@ class _HomeState extends State<Home> {
                     margin: const EdgeInsets.only(right: 16.0),
                     decoration: BoxDecoration(
                       borderRadius:
-                          BorderRadius.circular(10), // Arredondar as bordas
+                          BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
                           color: Color.fromARGB(108, 12, 102, 175),
