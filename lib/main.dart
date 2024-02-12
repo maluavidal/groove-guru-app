@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Groove Guru',
       routes: Routes.routes,
-      initialRoute: Routes.login, // Defina a rota inicial como login
+      initialRoute: Routes.login,
     );
   }
 }
