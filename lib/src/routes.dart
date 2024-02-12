@@ -18,6 +18,6 @@ class Routes {
     register: (context) => Register(),
     userPlaylists: (context) => const UserPlaylists(),
     musicSelect: (context) =>
-        const MusicListPage(), // Corrigido para MusicSelectPage
+        const MusicListPage()
   };
 }
