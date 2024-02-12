@@ -1,68 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:groove_guru_app/src/screens/login.dart';
 import 'package:groove_guru_app/src/screens/user_playlists.dart';
+import 'music_select.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
-
-  @override
-  State<Home> createState() => _HomeState();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const Home());
 }
 
-class _HomeState extends State<Home> {
-  double sliderValue1 = 0.0;
-  double sliderValue2 = 0.0;
-  double sliderValue3 = 0.0;
-  double sliderValue4 = 0.0;
+class SearchBar extends StatefulWidget {
+  final String? userName;
 
-  List<String> items = ["Playlist 1", "Playlist 2", "Playlist 3", "Playlist 4", "Playlist 5"];
+  const SearchBar({Key? key, this.userName}) : super(key: key);
 
-  List<String> imagePaths = [
-    'images/playlists.png',
-    'images/playlists.png',
-    'images/playlists.png',
-    'images/playlists.png',
-    'images/playlists.png',
-  ];
+  @override
+  _SearchBarState createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  late String _userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _userName = widget.userName ?? 'Usuário';
+  }
+
+  @override
+  void didUpdateWidget(SearchBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.userName != null && widget.userName != _userName) {
+      setState(() {
+        _userName = widget.userName!;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("images/tela-inicial.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Column(
-            children: [
-              _buildSearchBar(),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildHorizontalPlaylists(),
-                      _buildFeaturedSection(),
-                      _buildExploreSection(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  Widget _buildSearchBar() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * 0.1,
@@ -70,6 +49,10 @@ class _HomeState extends State<Home> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Text(
+            'Olá, $_userName',
+            style: const TextStyle(fontSize: 16.0, color: Colors.white),
+          ),
           Container(
             width: MediaQuery.of(context).size.width * 0.75,
             height: MediaQuery.of(context).size.height * 0.05,
@@ -90,20 +73,123 @@ class _HomeState extends State<Home> {
               },
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (_) => const Login(),
-              ));
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const Login(),
+                ),
+              );
             },
-            child: const Icon(
-              Icons.account_circle,
-              size: 50,
-              color: Colors.white,
+            icon: Image.asset(
+              'images/home.png',
+              width: 24,
+              height: 24,
             ),
-          )
+            iconSize: 24,
+            color: Colors.white,
+          ),
         ],
       ),
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late String _userName = '';
+  late List<String> _userPlaylists = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserName().then((userName) {
+      setState(() {
+        _userName = userName ?? 'Usuário';
+      });
+    });
+    getUserPlaylists().then((playlists) {
+      setState(() {
+        _userPlaylists = playlists;
+      });
+    });
+  }
+
+  Future<String?> getCurrentUserName() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      return snapshot['userName'];
+    }
+    return null;
+  }
+
+  Future<List<String>> getUserPlaylists() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('playlists')
+          .where('userId', isEqualTo: user.uid)
+          .get();
+      return querySnapshot.docs.map((doc) => doc['name'] as String).toList();
+    }
+    return [];
+  }
+
+  double sliderValue1 = 0.0;
+  double sliderValue2 = 0.0;
+  double sliderValue3 = 0.0;
+  double sliderValue4 = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("images/tela-inicial.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Column(
+            children: [
+              SearchBar(
+                  userName: _userName.isNotEmpty
+                      ? _userName
+                      : null),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildHorizontalPlaylists(),
+                      _buildFeaturedSection(),
+                      _buildExploreSection(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
@@ -114,74 +200,123 @@ class _HomeState extends State<Home> {
       margin: const EdgeInsets.only(bottom: 30.0),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: items.length,
+        itemCount: _userPlaylists.length < 3 ? 3 : _userPlaylists.length + 1,
         itemBuilder: (context, index) {
-          return Container(
-            width: 200,
-            height: 30,
-            margin: const EdgeInsets.only(right: 32.0),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: Color.fromARGB(255, 12, 102, 175),
-            ),
-            padding: const EdgeInsets.all(3.0),
-            child: Center(
-              child: Text(items[index]),
-            ),
-          );
+          if (index < _userPlaylists.length) {
+            return Container(
+              width: 200,
+              height: 30,
+              margin: const EdgeInsets.only(right: 32.0),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Color(0xFF0C66AF),
+              ),
+              padding: const EdgeInsets.all(3.0),
+              child: Center(
+                child: Text(
+                  _userPlaylists[index],
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return Container(
+              width: 200,
+              height: 30,
+              margin: const EdgeInsets.only(right: 32.0),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Color(0xFF0C66AF),
+              ),
+              padding: const EdgeInsets.all(3.0),
+              child: Center(
+                child: Text(
+                  'Crie sua playlist agora',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          }
         },
       ),
     );
   }
 
   Widget _buildFeaturedSection() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.15,
-      margin: const EdgeInsets.only(bottom: 30.0),
-      padding: const EdgeInsets.all(15.0),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromARGB(108, 12, 102, 175),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                const MusicListPage(),
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'Para você:',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Poppins',
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: imagePaths.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  width: 70,
-                  height: 70,
-                  margin: const EdgeInsets.only(right: 16.0),
-                  child: Image.asset(
-                    imagePaths[index],
-                    fit: BoxFit.contain,
-                  ),
-                );
-              },
+        );
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: MediaQuery.of(context).size.height * 0.15,
+        margin: const EdgeInsets.only(bottom: 30.0),
+        padding: const EdgeInsets.all(15.0),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromARGB(108, 12, 102, 175),
             ),
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          children: [
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  'Para você mesmo escolher e procurar suas músicas:',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount:
+                    8,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 70,
+                    height: 70,
+                    margin: const EdgeInsets.only(right: 16.0),
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromARGB(108, 12, 102, 175),
+                        ),
+                      ],
+                    ),
+                    child: Image.asset(
+                      'images/song${index + 1}.png',
+                      fit: BoxFit.contain,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -215,22 +350,22 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          _buildSlider("Característica 1:", sliderValue1, (value) {
+          _buildSlider("Dançabilidade:", sliderValue1, (value) {
             setState(() {
               sliderValue1 = value;
             });
           }),
-          _buildSlider("Característica 2:", sliderValue2, (value) {
+          _buildSlider("BPM:", sliderValue2, (value) {
             setState(() {
               sliderValue2 = value;
             });
           }),
-          _buildSlider("Característica 3:", sliderValue3, (value) {
+          _buildSlider("Animação:", sliderValue3, (value) {
             setState(() {
               sliderValue3 = value;
             });
           }),
-          _buildSlider("Característica 4:", sliderValue4, (value) {
+          _buildSlider("Instrumentalidade:", sliderValue4, (value) {
             setState(() {
               sliderValue4 = value;
             });
@@ -242,7 +377,8 @@ class _HomeState extends State<Home> {
                 // handle button action
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 9, 61, 104)),
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    const Color.fromARGB(255, 9, 61, 104)),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
@@ -295,52 +431,59 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildBottomNavigationBar() {
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.9,
-    height: MediaQuery.of(context).size.height * 0.11,
-    padding: const EdgeInsets.all(8.2),
-    decoration: const BoxDecoration(
-      color: Color.fromARGB(255, 33, 205, 243),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        _buildBottomNavItem('images/music_info.png', 'Info', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem('images/Sikh.png', 'Home', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem('images/playlists.png', 'Playlists', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => UserPlaylists(),
-          ));
-        }),
-      ],
-    ),
-  );
-}
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.11,
+      padding: const EdgeInsets.all(8.2),
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 33, 205, 243),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          _buildBottomNavItem('images/music_info.png', 'Search', () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const MusicListPage(),
+                ));
+          }),
+          _buildBottomNavItem('images/Sikh.png', 'Home', () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const Home(),
+                ));
+          }),
+          _buildBottomNavItem('images/playlists.png', 'Playlists', () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const UserPlaylists(),
+                ));
+          }),
+        ],
+      ),
+    );
+  }
 
-Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
-  return TextButton(
-    onPressed: onTap,
-    child: Column(
-      children: <Widget>[
-        Image.asset(iconPath),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12.0,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+  Widget _buildBottomNavItem(
+      String iconPath, String label, VoidCallback onTap) {
+    return TextButton(
+      onPressed: onTap,
+      child: Column(
+        children: <Widget>[
+          Image.asset(iconPath),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
- }
+        ],
+      ),
+    );
+  }
 }
