@@ -202,7 +202,6 @@ class _PlaylistState extends State<Playlist> {
 
       musicIds.removeAt(index);
 
-      // Atualiza a lista de IDs de músicas na playlist
       await FirebaseFirestore.instance
           .collection('playlists')
           .doc(widget.playlistId)
