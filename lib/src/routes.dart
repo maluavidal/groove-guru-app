@@ -17,7 +17,6 @@ class Routes {
     login: (context) => const Login(),
     register: (context) => Register(),
     userPlaylists: (context) => const UserPlaylists(),
-    musicSelect: (context) =>
-        const MusicListPage()
+    musicSelect: (context) => const MusicListPage(),
   };
 }

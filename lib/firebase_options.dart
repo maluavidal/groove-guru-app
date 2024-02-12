@@ -44,37 +44,41 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC39KHWMC1tOjWTYGti8a_VLh49eht5ZNM',
-    appId: '1:874029086467:web:f5eb205a9b43f12491db36',
-    messagingSenderId: '874029086467',
-    projectId: 'groove-guru',
-    authDomain: 'groove-guru.firebaseapp.com',
-    storageBucket: 'groove-guru.appspot.com',
+    apiKey: 'AIzaSyA1LD3GVrnuZc5VEpJVkgAWyBn2i8wxJ7s',
+    appId: '1:26893631499:web:1206bf843bc81c4479470e',
+    messagingSenderId: '26893631499',
+    projectId: 'groove-guru-8b76e',
+    authDomain: 'groove-guru-8b76e.firebaseapp.com',
+    databaseURL: 'https://groove-guru-8b76e-default-rtdb.firebaseio.com',
+    storageBucket: 'groove-guru-8b76e.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBb44wcgpzejj5m19LiKYdQYGVR2JJdQcA',
-    appId: '1:874029086467:android:86369d91ca03714391db36',
-    messagingSenderId: '874029086467',
-    projectId: 'groove-guru',
-    storageBucket: 'groove-guru.appspot.com',
+    apiKey: 'AIzaSyClDlOoHd8wIQMKM0tyKIlSLA-17MifT30',
+    appId: '1:26893631499:android:3c205f176ea8fd2279470e',
+    messagingSenderId: '26893631499',
+    projectId: 'groove-guru-8b76e',
+    databaseURL: 'https://groove-guru-8b76e-default-rtdb.firebaseio.com',
+    storageBucket: 'groove-guru-8b76e.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB1a9OIQNtHM_5c8OD7PymIBKq6lWpjRXE',
-    appId: '1:874029086467:ios:1be00e6c75c5460391db36',
-    messagingSenderId: '874029086467',
-    projectId: 'groove-guru',
-    storageBucket: 'groove-guru.appspot.com',
+    apiKey: 'AIzaSyAqMpV2-IWEkwR1gkQilEz0hb3bQlgt5QU',
+    appId: '1:26893631499:ios:d62787bc101eb03479470e',
+    messagingSenderId: '26893631499',
+    projectId: 'groove-guru-8b76e',
+    databaseURL: 'https://groove-guru-8b76e-default-rtdb.firebaseio.com',
+    storageBucket: 'groove-guru-8b76e.appspot.com',
     iosBundleId: 'com.example.grooveGuruApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB1a9OIQNtHM_5c8OD7PymIBKq6lWpjRXE',
-    appId: '1:874029086467:ios:28cb63544959d71191db36',
-    messagingSenderId: '874029086467',
-    projectId: 'groove-guru',
-    storageBucket: 'groove-guru.appspot.com',
+    apiKey: 'AIzaSyAqMpV2-IWEkwR1gkQilEz0hb3bQlgt5QU',
+    appId: '1:26893631499:ios:1379acddc5bf412279470e',
+    messagingSenderId: '26893631499',
+    projectId: 'groove-guru-8b76e',
+    databaseURL: 'https://groove-guru-8b76e-default-rtdb.firebaseio.com',
+    storageBucket: 'groove-guru-8b76e.appspot.com',
     iosBundleId: 'com.example.grooveGuruApp.RunnerTests',
   );
 }
