@@ -255,7 +255,7 @@ class _HomeState extends State<Home> {
           context,
           MaterialPageRoute(
             builder: (_) =>
-                const MusicListPage(), // Direcionar para a página de seleção de músicas
+                const MusicListPage(),
           ),
         );
       },
