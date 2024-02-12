@@ -1,24 +1,60 @@
 import 'package:flutter/material.dart';
-import 'music_info.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:groove_guru_app/src/screens/music_info.dart';
 import 'package:groove_guru_app/src/screens/home.dart';
 import 'package:groove_guru_app/src/screens/user_playlists.dart';
-void main() {
-  runApp(const MaterialApp(
-    home: Playlist(playlistName: 'Your Playlist Name'),
-  ));
-}
+import 'package:groove_guru_app/src/screens/music_select.dart';
 
 class Playlist extends StatefulWidget {
-  final String playlistName;
+  final String playlistId;
 
-  const Playlist({Key? key, required this.playlistName}) : super(key: key);
+  const Playlist({Key? key, required this.playlistId}) : super(key: key);
 
   @override
   State<Playlist> createState() => _PlaylistState();
 }
 
 class _PlaylistState extends State<Playlist> {
-  List<String> songs = List.generate(20, (index) => 'Song ${index + 1}');
+  List<String> songs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSongs();
+  }
+
+  Future<void> _fetchSongs() async {
+    try {
+      DocumentSnapshot playlistSnapshot = await FirebaseFirestore.instance
+          .collection('playlists')
+          .doc(widget.playlistId)
+          .get();
+
+      if (playlistSnapshot.exists) {
+        List<dynamic> musicIds = playlistSnapshot.get('musicIds');
+
+        List<String> songNames = [];
+
+        for (dynamic musicId in musicIds) {
+          DocumentSnapshot musicSnapshot = await FirebaseFirestore.instance
+              .collection('musics')
+              .doc(musicId)
+              .get();
+
+          if (musicSnapshot.exists) {
+            String songName = musicSnapshot.get('track_name') as String;
+            songNames.add(songName);
+          }
+        }
+
+        setState(() {
+          songs = songNames;
+        });
+      }
+    } catch (error) {
+      print("Erro ao buscar músicas: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,81 +65,96 @@ class _PlaylistState extends State<Playlist> {
   }
 
   Widget _buildBody() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('images/tela-inicial.png'),
-                fit: BoxFit.cover,
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('images/tela-inicial.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Pesquisar músicas...',
+                prefixIcon: IconButton(
+                  icon: Image.asset(
+                    'images/search.png',
+                    width: 20,
+                    height: 20,
+                  ),
+                  onPressed: () {},
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.white,
               ),
             ),
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  widget.playlistName,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 8.0),
-                Expanded(
-                  child: _buildSongList(),
-                ),
-              ],
-            ),
           ),
-        ),
-      ],
+          Expanded(
+            child: songs.isEmpty
+                ? Center(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MusicListPage(),
+                          ),
+                        );
+                        _fetchSongs();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.cyan,
+                        onPrimary: Colors.blue,
+                      ),
+                      child: Text(
+                        'Adicionar Músicas Agora',
+                        style: TextStyle(
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ),
+                  )
+                : _buildSongList(),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildSongList() {
-    return ListView(
-      children: songs.map((songName) {
-        return _buildSongContainer(songName);
-      }).toList(),
+    return ListView.builder(
+      itemCount: songs.length,
+      itemBuilder: (context, index) {
+        return _buildSongContainer(songs[index], index);
+      },
     );
   }
 
-  Widget _buildSongContainer(String songName) {
+  Widget _buildSongContainer(String songName, int index) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: _buildDismissibleSong(songName),
+      child: _buildDismissibleSong(songName, index),
     );
   }
 
-  Widget _buildDismissibleSong(String songName) {
+  Widget _buildDismissibleSong(String songName, int index) {
     return Dismissible(
       key: Key(songName),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
-        _removeSong(songName);
-        _showSongRemovedSnackBar(songName);
+        _removeSong(index);
       },
       background: _buildDismissBackground(),
       child: _buildSongTile(songName),
@@ -128,111 +179,94 @@ class _PlaylistState extends State<Playlist> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(songName),
-          _buildPopupMenu(songName),
         ],
       ),
     );
   }
 
-  Widget _buildPopupMenu(String songName) {
-    return PopupMenuButton<String>(
-      onSelected: (value) {
-        _handlePopupMenuSelection(value, songName);
-      },
-      itemBuilder: (context) => [
-        const PopupMenuItem<String>(
-          value: 'info',
-          child: Text('Sobre a música'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'delete',
-          child: Text('Remover'),
-        ),
-      ],
-    );
-  }
+  void _removeSong(int index) async {
+    try {
+      List<dynamic> musicIds = [];
 
-  void _removeSong(String songName) {
-    setState(() {
-      songs.remove(songName);
-    });
-  }
+      DocumentSnapshot playlistSnapshot = await FirebaseFirestore.instance
+          .collection('playlists')
+          .doc(widget.playlistId)
+          .get();
 
-  void _showSongRemovedSnackBar(String songName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$songName foi removida de sua playlist'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
+      if (playlistSnapshot.exists) {
+        musicIds = List.from(playlistSnapshot.get('musicIds'));
+      }
 
-  void _handlePopupMenuSelection(String value, String songName) {
-    if (value == 'info') {
-      _navigateToMusicInfoScreen(songName);
-    } else if (value == 'delete') {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      _removeSong(songName);
-      _showSongRemovedSnackBar(songName);
+      musicIds.removeAt(index);
+
+      await FirebaseFirestore.instance
+          .collection('playlists')
+          .doc(widget.playlistId)
+          .update({'musicIds': musicIds});
+    } catch (error) {
+      print("Erro ao remover música da playlist: $error");
     }
-  }
 
-  void _navigateToMusicInfoScreen(String songName) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MusicInfo(songName: songName),
-      ),
-    );
+    _fetchSongs();
   }
 
   Widget _buildBottomNavigationBar() {
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.9,
-    height: MediaQuery.of(context).size.height * 0.11,
-    padding: const EdgeInsets.all(8.2),
-    decoration: const BoxDecoration(
-      color: Color.fromARGB(255, 33, 205, 243),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        _buildBottomNavItem('images/music_info.png', 'Info', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem('images/Sikh.png', 'Home', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem('images/playlists.png', 'Playlists', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => UserPlaylists(),
-          ));
-        }),
-      ],
-    ),
-  );
-}
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.11,
+      padding: const EdgeInsets.all(8.2),
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 33, 205, 243),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          _buildBottomNavItem('images/music_info.png', 'Search', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => MusicListPage(),
+              ),
+            );
+          }),
+          _buildBottomNavItem('images/Sikh.png', 'Home', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => Home(),
+              ),
+            );
+          }),
+          _buildBottomNavItem('images/playlists.png', 'Playlists', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => UserPlaylists(),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
 
-Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
-  return TextButton(
-    onPressed: onTap,
-    child: Column(
-      children: <Widget>[
-        Image.asset(iconPath),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12.0,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+  Widget _buildBottomNavItem(
+      String iconPath, String label, VoidCallback onTap) {
+    return TextButton(
+      onPressed: onTap,
+      child: Column(
+        children: <Widget>[
+          Image.asset(iconPath),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
- }
+        ],
+      ),
+    );
+  }
 }

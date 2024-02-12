@@ -3,7 +3,10 @@ import 'music_info.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: ArtistPage(artist: Artist(name: 'Nome do Artista', songs: List.generate(20, (index) => 'Música ${index + 1}'))),
+    home: ArtistPage(
+        artist: Artist(
+            name: 'Nome do Artista',
+            songs: List.generate(20, (index) => 'Música ${index + 1}'))),
   ));
 }
 
@@ -249,9 +252,7 @@ class _ArtistPageState extends State<ArtistPage> {
 
   Widget _buildBottomNavItem(String iconPath, String label) {
     return TextButton(
-      onPressed: () {
-      
-      },
+      onPressed: () {},
       child: Column(
         children: <Widget>[
           Image.asset(iconPath),

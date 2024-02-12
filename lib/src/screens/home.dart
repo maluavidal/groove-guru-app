@@ -68,9 +68,7 @@ class _SearchBarState extends State<SearchBar> {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
-              onSubmitted: (value) {
-                // handle search input submission
-              },
+              onSubmitted: (value) {},
             ),
           ),
           IconButton(
@@ -170,10 +168,7 @@ class _HomeState extends State<Home> {
           ),
           Column(
             children: [
-              SearchBar(
-                  userName: _userName.isNotEmpty
-                      ? _userName
-                      : null),
+              SearchBar(userName: _userName.isNotEmpty ? _userName : null),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -254,8 +249,7 @@ class _HomeState extends State<Home> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                const MusicListPage(),
+            builder: (_) => const MusicListPage(),
           ),
         );
       },
@@ -291,16 +285,14 @@ class _HomeState extends State<Home> {
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount:
-                    8,
+                itemCount: 8,
                 itemBuilder: (context, index) {
                   return Container(
                     width: 70,
                     height: 70,
                     margin: const EdgeInsets.only(right: 16.0),
                     decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
                           color: Color.fromARGB(108, 12, 102, 175),
@@ -373,9 +365,7 @@ class _HomeState extends State<Home> {
           Container(
             margin: const EdgeInsets.only(top: 12, bottom: 12),
             child: ElevatedButton(
-              onPressed: () {
-                // handle button action
-              },
+              onPressed: () {},
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
                     const Color.fromARGB(255, 9, 61, 104)),
