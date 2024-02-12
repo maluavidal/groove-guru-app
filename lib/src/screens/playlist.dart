@@ -191,7 +191,6 @@ class _PlaylistState extends State<Playlist> {
     try {
       List<dynamic> musicIds = [];
 
-      // Busca os IDs das músicas na playlist
       DocumentSnapshot playlistSnapshot = await FirebaseFirestore.instance
           .collection('playlists')
           .doc(widget.playlistId)
