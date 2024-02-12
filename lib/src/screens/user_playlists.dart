@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'playlist.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:groove_guru_app/src/screens/home.dart';
+import 'playlist.dart';
+import 'package:groove_guru_app/src/screens/music_select.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -11,48 +14,63 @@ void main() {
 class UserPlaylists extends StatefulWidget {
   const UserPlaylists({Key? key}) : super(key: key);
 
-  static List<String> playlists = [
-    "My Playlist 1",
-    "My Playlist 2",
-    "My Playlist 3",
-    "My Playlist 4",
-    "My Playlist 5",
-    "My Playlist 6",
-    "My Playlist 7",
-    "My Playlist 8",
-  ];
-
   @override
   State<UserPlaylists> createState() => _UserPlaylistsState();
 }
 
 class _UserPlaylistsState extends State<UserPlaylists> {
-  List<String> playlists = [
-    "My Playlist 1",
-    "My Playlist 2",
-    "My Playlist 3",
-    "My Playlist 4",
-    "My Playlist 5",
-    "My Playlist 6",
-    "My Playlist 7",
-    "My Playlist 8",
-  ];
+  late User? _user;
+  late List<String> playlists;
+  String searchText = '';
+  final CollectionReference playlistsCollection =
+      FirebaseFirestore.instance.collection('playlists');
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+    playlists = [];
+    _fetchPlaylists();
+  }
+
+  Future<void> _fetchUser() async {
+    _user = FirebaseAuth.instance.currentUser;
+  }
+
+  Future<void> _fetchPlaylists() async {
+    if (_user != null) {
+      QuerySnapshot playlistsSnapshot = await playlistsCollection
+          .where('userId', isEqualTo: _user!.uid)
+          .get();
+      setState(() {
+        playlists =
+            playlistsSnapshot.docs.map((doc) => doc['name'] as String).toList();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<String> filteredPlaylists = playlists
+        .where((playlist) =>
+            playlist.toLowerCase().contains(searchText.toLowerCase()))
+        .toList();
+
     return Scaffold(
       appBar: _buildAppBar(),
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("images/tela-inicial.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        color: const Color.fromARGB(255, 33, 205, 243),
         child: Column(
           children: [
             _buildSearchBar(),
-            _buildPlaylistContainers(),
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredPlaylists.length,
+                itemBuilder: (context, index) {
+                  return _buildPlaylistContainer(filteredPlaylists[index]);
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -67,10 +85,7 @@ class _UserPlaylistsState extends State<UserPlaylists> {
       title: Row(
         children: [
           IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-            ),
+            icon: Image.asset('images/back.png', width: 24, height: 24),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -87,10 +102,7 @@ class _UserPlaylistsState extends State<UserPlaylists> {
           ),
           const Spacer(),
           IconButton(
-            icon: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
+            icon: Image.asset('images/edit.png', width: 24, height: 24),
             onPressed: () {
               _showCreatePlaylistDialog();
             },
@@ -102,30 +114,22 @@ class _UserPlaylistsState extends State<UserPlaylists> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0, left: 13.0, right: 13.0, top: 16.0),
+      padding: const EdgeInsets.only(
+          bottom: 25.0, left: 26.0, right: 13.0, top: 16.0),
       child: TextField(
         decoration: InputDecoration(
           hintText: 'Buscar playlists',
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: Image.asset('images/search.png', width: 24, height: 24),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25.0),
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: Color(0xFFFFFFFF),
         ),
         onChanged: (value) {
-          // Handle search input
-        },
-      ),
-    );
-  }
-
-  Widget _buildPlaylistContainers() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: playlists.length,
-        itemBuilder: (context, index) {
-          return _buildPlaylistContainer(playlists[index]);
+          setState(() {
+            searchText = value;
+          });
         },
       ),
     );
@@ -134,34 +138,66 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   Widget _buildPlaylistContainer(String playlistName) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Playlist(playlistName: playlistName),
-          ),
-        );
+        // Aqui vamos buscar o ID da playlist antes de navegar
+        _fetchPlaylistId(playlistName);
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.9,
-        height: 70,
-        margin: const EdgeInsets.only(bottom: 16.0, left: 13.0, right: 13.0),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromARGB(108, 12, 102, 175),
-            ),
-          ],
+      child: Dismissible(
+        key: Key(playlistName),
+        background: Container(
+          color: Colors.red,
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: Image.asset('images/delete.png', width: 24, height: 24),
+          ),
         ),
-        padding: const EdgeInsets.all(15.0),
-        child: Center(
-          child: Text(
-            playlistName,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              fontFamily: 'Poppins',
+        onDismissed: (direction) {
+          playlistsCollection
+              .where('userId', isEqualTo: _user!.uid)
+              .where('name', isEqualTo: playlistName)
+              .get()
+              .then((QuerySnapshot querySnapshot) {
+            querySnapshot.docs.forEach((doc) {
+              doc.reference.delete().then((value) {
+                setState(() {
+                  playlists.remove(playlistName);
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('$playlistName removida')),
+                );
+              }).catchError((error) {
+                print("Failed to delete playlist: $error");
+              });
+            });
+          }).catchError((error) {
+            print("Failed to fetch playlist: $error");
+          });
+        },
+        direction: DismissDirection.endToStart,
+        child: Container(
+          width: double.infinity,
+          height: 70,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 5,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              playlistName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontFamily: 'Poppins',
+              ),
             ),
           ),
         ),
@@ -170,54 +206,55 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   }
 
   Widget _buildBottomNavigationBar() {
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.9,
-    height: MediaQuery.of(context).size.height * 0.11,
-    padding: const EdgeInsets.all(8.2),
-    decoration: const BoxDecoration(
-      color: Color.fromARGB(255, 33, 205, 243),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        _buildBottomNavItem('images/music_info.png', 'Info', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem('images/Sikh.png', 'Home', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem('images/playlists.png', 'Playlists', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => UserPlaylists(),
-          ));
-        }),
-      ],
-    ),
-  );
-}
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.11,
+      padding: const EdgeInsets.all(8.2),
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 33, 205, 243),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          _buildBottomNavItem('images/music_info.png', 'Search', () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => MusicListPage(),
+                ));
+          }),
+          _buildBottomNavItem('images/Sikh.png', 'Home', () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Home(),
+                ));
+          }),
+          _buildBottomNavItem('images/playlists.png', 'Playlists', () {}),
+        ],
+      ),
+    );
+  }
 
-Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
-  return TextButton(
-    onPressed: onTap,
-    child: Column(
-      children: <Widget>[
-        Image.asset(iconPath),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12.0,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+  Widget _buildBottomNavItem(
+      String iconPath, String label, VoidCallback onTap) {
+    return TextButton(
+      onPressed: onTap,
+      child: Column(
+        children: <Widget>[
+          Image.asset(iconPath, width: 48, height: 48),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
- }
+        ],
+      ),
+    );
+  }
 
   Future<void> _showCreatePlaylistDialog() async {
     String playlistName = '';
@@ -226,19 +263,18 @@ Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
+          title: Text(
+            'Nomeie a sua playlist',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          title: const Text('Nomeie a sua playlist'),
           content: TextField(
             onChanged: (value) {
               playlistName = value;
             },
-            style: const TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
+              border: OutlineInputBorder(),
               filled: true,
               fillColor: Colors.white,
             ),
@@ -249,9 +285,12 @@ Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
                 Navigator.of(context).pop();
               },
               style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
+                backgroundColor: Colors.red,
               ),
-              child: const Text('Cancelar'),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -259,72 +298,12 @@ Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+                primary: Colors.white,
               ),
-              child: const Text('Criar', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _showAddToPlaylistDialog(String songName) async {
-    String selectedPlaylist = '';
-
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          title: const Text('Adicionar a playlist'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButton<String>(
-                value: selectedPlaylist,
-                hint: const Text('Selecione a playlist'),
-                items: playlists.map((String playlist) {
-                  return DropdownMenuItem<String>(
-                    value: playlist,
-                    child: Text(playlist),
-                  );
-                }).toList(),
-                onChanged: (String? value) {
-                  setState(() {
-                    selectedPlaylist = value ?? '';
-                  });
-                },
+              child: Text(
+                'Criar',
+                style: TextStyle(color: Colors.blue),
               ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _addToPlaylist(selectedPlaylist, songName);
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              child: const Text('Adicionar', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -333,12 +312,34 @@ Widget _buildBottomNavItem(String iconPath, String label, VoidCallback onTap) {
   }
 
   void _createPlaylist(String playlistName) {
-    setState(() {
-      playlists.add(playlistName);
+    playlistsCollection.add({
+      'name': playlistName,
+      'userId': _user!.uid,
+      'musicIds': [],
     });
+    _fetchPlaylists();
   }
 
-  void _addToPlaylist(String playlistName, String songName) {
-    print('Adicionar $songName à playlist $playlistName');
+  // Função para buscar o ID da playlist antes de navegar para a página Playlist
+  void _fetchPlaylistId(String playlistName) {
+    playlistsCollection
+        .where('userId', isEqualTo: _user!.uid)
+        .where('name', isEqualTo: playlistName)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        // Se encontramos a playlist, navegamos para a página Playlist com o ID correto
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => Playlist(
+              playlistId: querySnapshot.docs.first.id,
+            ),
+          ),
+        );
+      }
+    }).catchError((error) {
+      print("Failed to fetch playlist: $error");
+    });
   }
 }
