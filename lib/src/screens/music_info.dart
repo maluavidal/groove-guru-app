@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:groove_guru_app/src/screens/home.dart';
 import 'package:groove_guru_app/src/screens/user_playlists.dart';
-class MusicInfo extends StatelessWidget {
-  final String songName;
 
-  const MusicInfo({Key? key, required this.songName}) : super(key: key);
+class MusicInfo extends StatelessWidget {
+  final DocumentSnapshot musicSnapshot;
+
+  const MusicInfo({Key? key, required this.musicSnapshot}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,156 +17,160 @@ class MusicInfo extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Stack(
       children: [
-        Expanded(
-          child: Container(
-            decoration: _buildContainerDecoration(),
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 3.0),
-                _buildBackArrow(context),
-                const SizedBox(height: 16.0),
-                _buildSongImage(),
-                const SizedBox(height: 16.0),
-                Text(
-                  songName,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                _buildDetailsContainer(),
-              ],
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('images/tela-inicial.png'),
+              fit: BoxFit.cover,
             ),
           ),
         ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildBackArrow(context),
+            SizedBox(height: 10),
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: Image.asset(
+                      'images/logos.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 0),
+            _buildDetailsContainer(),
+          ],
+        ),
       ],
-    );
-  }
-
-  BoxDecoration _buildContainerDecoration() {
-    return const BoxDecoration(
-      image: DecorationImage(
-        image: AssetImage('images/tela-inicial.png'),
-        fit: BoxFit.cover,
-      ),
     );
   }
 
   Widget _buildBackArrow(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 40,
+            height: 35,
+            child: IconButton(
+              icon: Image.asset('images/back.png'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSongImage() {
-    return Container(
-      height: 300.0,
-      width: 300.0,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 2.0),
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.grey,
+        ],
       ),
-      // replace the color property with the actual image in the future
-      // child: Image.asset('your_image_path_here'),
     );
   }
 
   Widget _buildDetailsContainer() {
-  return Expanded(
-    child: Container(
+    return Container(
+      margin: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 4.0),
-        borderRadius: BorderRadius.circular(16.0),
-        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.grey[200],
       ),
-      margin: const EdgeInsets.only(bottom: 8.0),
-      padding: const EdgeInsets.all(16.0),
-      child: ListView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSongDetails(),
+          _buildDetail('Artista', musicSnapshot['artist(s)_name']),
+          _buildDetail('Nome da música', musicSnapshot['track_name']),
+          _buildDetail('Streams', musicSnapshot['streams'].toString()),
+          _buildDetail('Data de Lançamento',
+              '${musicSnapshot['released_day']}/${musicSnapshot['released_month']}/${musicSnapshot['released_year']}'),
         ],
-      ),
-    ),
-  );
-}
-
-  Widget _buildSongDetails() {
-    return const Text(
-      'song details',
-      style: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
       ),
     );
   }
 
-Widget _buildBottomNavigationBar(BuildContext context) {
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.9,
-    height: MediaQuery.of(context).size.height * 0.11,
-    padding: const EdgeInsets.all(8.2),
-    decoration: const BoxDecoration(
-      color: Color.fromARGB(255, 33, 205, 243),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        _buildBottomNavItem(context, 'images/music_info.png', 'Info', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem(context, 'images/Sikh.png', 'Home', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => Home(),
-          ));
-        }),
-        _buildBottomNavItem(context, 'images/playlists.png', 'Playlists', () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => UserPlaylists(),
-          ));
-        }),
-      ],
-    ),
-  );
-}
-
-Widget _buildBottomNavItem(BuildContext context, String iconPath, String label, VoidCallback onTap) {
-  return TextButton(
-    onPressed: onTap,
-    child: Column(
-      children: <Widget>[
-        Image.asset(iconPath),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12.0,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+  Widget _buildDetail(String label, String detail) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 2.0),
+      child: RichText(
+        text: TextSpan(
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 19.0),
+          children: [
+            TextSpan(
+              text: '$label: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextSpan(text: detail),
+          ],
         ),
-      ],
-    ),
-  );
-}
+      ),
+    );
+  }
 
+  Widget _buildBottomNavigationBar(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.11,
+      padding: const EdgeInsets.all(8.2),
+      decoration: const BoxDecoration(
+        color: Color.fromARGB(255, 33, 205, 243),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          _buildBottomNavItem(context, 'images/music_info.png', 'Search', () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Home(),
+                ));
+          }),
+          _buildBottomNavItem(context, 'images/Sikh.png', 'Home', () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Home(),
+                ));
+          }),
+          _buildBottomNavItem(context, 'images/playlists.png', 'Playlists', () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => UserPlaylists(),
+                ));
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomNavItem(
+      BuildContext context, String iconPath, String label, VoidCallback onTap) {
+    return TextButton(
+      onPressed: onTap,
+      child: Column(
+        children: <Widget>[
+          Image.asset(iconPath),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
