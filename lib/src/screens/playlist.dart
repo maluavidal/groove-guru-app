@@ -200,7 +200,6 @@ class _PlaylistState extends State<Playlist> {
         musicIds = List.from(playlistSnapshot.get('musicIds'));
       }
 
-      // Remove o ID da música da lista de IDs na playlist
       musicIds.removeAt(index);
 
       // Atualiza a lista de IDs de músicas na playlist
