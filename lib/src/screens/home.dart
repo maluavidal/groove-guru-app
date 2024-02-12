@@ -173,7 +173,7 @@ class _HomeState extends State<Home> {
               SearchBar(
                   userName: _userName.isNotEmpty
                       ? _userName
-                      : null), // Passando null se _userName estiver vazio
+                      : null),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
