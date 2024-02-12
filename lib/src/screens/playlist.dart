@@ -110,7 +110,6 @@ class _PlaylistState extends State<Playlist> {
                             builder: (_) => MusicListPage(),
                           ),
                         );
-                        // Após adicionar músicas, atualiza a lista de músicas
                         _fetchSongs();
                       },
                       style: ElevatedButton.styleFrom(
