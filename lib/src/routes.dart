@@ -3,7 +3,7 @@ import 'screens/home.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
 import 'screens/user_playlists.dart';
-import 'screens/music_select.dart'; // Importe a página music_select.dart aqui
+import 'screens/music_select.dart';
 
 class Routes {
   static const String home = '/';
