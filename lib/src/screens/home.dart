@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:groove_guru_app/src/screens/login.dart';
 import 'package:groove_guru_app/src/screens/user_playlists.dart';
-import 'music_select.dart'; // Importe a página music_selector.dart
+import 'music_select.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
