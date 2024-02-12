@@ -138,7 +138,6 @@ class _UserPlaylistsState extends State<UserPlaylists> {
   Widget _buildPlaylistContainer(String playlistName) {
     return GestureDetector(
       onTap: () {
-        // Aqui vamos buscar o ID da playlist antes de navegar
         _fetchPlaylistId(playlistName);
       },
       child: Dismissible(
@@ -320,7 +319,6 @@ class _UserPlaylistsState extends State<UserPlaylists> {
     _fetchPlaylists();
   }
 
-  // Função para buscar o ID da playlist antes de navegar para a página Playlist
   void _fetchPlaylistId(String playlistName) {
     playlistsCollection
         .where('userId', isEqualTo: _user!.uid)
@@ -328,7 +326,6 @@ class _UserPlaylistsState extends State<UserPlaylists> {
         .get()
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
-        // Se encontramos a playlist, navegamos para a página Playlist com o ID correto
         Navigator.push(
           context,
           MaterialPageRoute(

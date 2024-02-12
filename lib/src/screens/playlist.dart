@@ -110,6 +110,7 @@ class _PlaylistState extends State<Playlist> {
                             builder: (_) => MusicListPage(),
                           ),
                         );
+                        // Após adicionar músicas, atualiza a lista de músicas
                         _fetchSongs();
                       },
                       style: ElevatedButton.styleFrom(
@@ -182,6 +183,7 @@ class _PlaylistState extends State<Playlist> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(songName),
+          // Adicione o ícone de menu de contexto aqui, se necessário
         ],
       ),
     );
@@ -191,6 +193,7 @@ class _PlaylistState extends State<Playlist> {
     try {
       List<dynamic> musicIds = [];
 
+      // Busca os IDs das músicas na playlist
       DocumentSnapshot playlistSnapshot = await FirebaseFirestore.instance
           .collection('playlists')
           .doc(widget.playlistId)
@@ -200,8 +203,10 @@ class _PlaylistState extends State<Playlist> {
         musicIds = List.from(playlistSnapshot.get('musicIds'));
       }
 
+      // Remove o ID da música da lista de IDs na playlist
       musicIds.removeAt(index);
 
+      // Atualiza a lista de IDs de músicas na playlist
       await FirebaseFirestore.instance
           .collection('playlists')
           .doc(widget.playlistId)
@@ -268,9 +273,8 @@ class _PlaylistState extends State<Playlist> {
               fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-      ],
-    ),
-  );
- }
+        ],
+      ),
+    );
+  }
 }

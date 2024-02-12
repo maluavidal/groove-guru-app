@@ -104,7 +104,7 @@ class MusicInfo extends StatelessWidget {
         text: TextSpan(
           style: TextStyle(
               color: Colors.black,
-              fontSize: 19.0),
+              fontSize: 19.0), // Ajuste o tamanho da fonte aqui
           children: [
             TextSpan(
               text: '$label: ',
